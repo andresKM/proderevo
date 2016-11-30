@@ -1,30 +1,34 @@
 package com.proderevo.www.proderevoapp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
+
+import im.delight.android.webview.AdvancedWebView;
 
 
-public class FullscreenActivity extends Activity {
+public class FullscreenActivity extends Activity implements AdvancedWebView.Listener {
 
-    private WebView mWebView;
+    private AdvancedWebView mWebView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fullscreen_content);
 
-        mWebView = (WebView) findViewById(R.id.fullscreen_content_webview);
+        mWebView = (AdvancedWebView) findViewById(R.id.fullscreen_content_webview);
+        mWebView.setListener(this, this);
+        mWebView.loadUrl("file:///android_asset/www/index.html");
 
-        // Force links and redirects to open in the WebView instead of in a browser
-        mWebView.setWebViewClient(new WebViewClient());
 
         // Enable Javascript
         WebSettings webSettings = mWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
+//        webSettings.setJavaScriptEnabled(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
@@ -32,21 +36,63 @@ public class FullscreenActivity extends Activity {
             webSettings.setAllowUniversalAccessFromFileURLs(true);
         }
 
-        // Stop local links and redirects from opening in browser instead of WebView
-        // mWebView.setWebViewClient(new MyAppWebViewClient());
-
-        // Use local resource
-        mWebView.loadUrl("file:///android_asset/www/index.html");
     }
 
-    // Prevent the back-button from closing the app
+
+
+
+    @SuppressLint("NewApi")
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mWebView.onResume();
+        // ...
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    protected void onPause() {
+        mWebView.onPause();
+        // ...
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mWebView.onDestroy();
+        // ...
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        mWebView.onActivityResult(requestCode, resultCode, intent);
+        // ...
+    }
+
     @Override
     public void onBackPressed() {
-        if(mWebView.canGoBack()) {
-            mWebView.goBack();
-        } else {
-            super.onBackPressed();
-        }
+        if (!mWebView.onBackPressed()) { return; }
+        // ...
+        super.onBackPressed();
     }
+
+    @Override
+    public void onPageStarted(String url, Bitmap favicon) { }
+
+    @Override
+    public void onPageFinished(String url) { }
+
+    @Override
+    public void onPageError(int errorCode, String description, String failingUrl) { }
+
+    @Override
+    public void onDownloadRequested(String url, String suggestedFilename, String mimeType, long contentLength, String contentDisposition, String userAgent) { }
+
+    @Override
+    public void onExternalPageRequest(String url) { }
+
+
 
 }
