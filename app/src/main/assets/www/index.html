@@ -171,15 +171,20 @@
 					$.fn.submit_send(file_bin);
 				};
 			} else {
-				alert("Файл не обрано або несумісний браузер.");
+				//alert("Файл не обрано або несумісний браузер.");
 				console.log("else clause in FileReader");
+				var text_message = $("<h4 class='ui header center aligned grey'>Файл не обрано або несумісний браузер. Перевірте форму вводу та з'єднання з мережею. Спробуйте ще.</h4>");
+				$("#results_table_input > table").remove();
+				$("#results_table_input > h4").remove();
+				$('#results_table_input').removeClass("loading");
+				$(text_message).appendTo("#results_table_input");
 			}
 		}
 
 
 		$.fn.submit_send = function(file_bin) {
 
-			console.log(file_bin);
+			//console.log(file_bin);
 			client.index({
 				index: 'fsc',
 				type: 'eod',
@@ -231,6 +236,7 @@
 				}
 			}, function(error) {
 				console.trace(error.message);
+				alert ("Перевірте запит та з'єднання з мережею. Спробуйте ще.");
 			});
 		}
 
@@ -251,8 +257,8 @@
 
 
 		$('#input-form .submit.button').on('click', function() {
-			$('#results_table_input').addClass("loading");
-			$.fn.submit_input();
+			/*$('#results_table_input').addClass("loading");
+			$.fn.submit_input();*/
 		});
 
 
@@ -366,18 +372,23 @@
 						type: 'empty'
 					}]
 				},
-				/*"input-form-ttn_foto": {
+				"input-form-ttn_foto": {
 					identifier: 'input-form-ttn_foto',
-					rules: [{
+					optional   : true
+					/*rules: [{
 						type: ''
-					}]
-				},*/
+					}]*/
+				},
 				"terms": {
 					identifier: 'terms',
 					rules: [{
 						type: 'checked'
 					}]
 				}
+			},
+			onSuccess: function () {
+				$('#results_table_input').addClass("loading");
+				$.fn.submit_input();
 			}
 		});
 
@@ -543,14 +554,14 @@
 					<div class="item">Внести дані</div>
 				</div>
 				<p  style="font-size: 1.25em;text-indent: 1em;">
-					Вміст вкладки буде відображено в головному вікні. Переключення між вкладками не очищує результати пошуків для зручності. Для того, щоб очистити форму пошуку/вводу натисніть жовту кнопку (Зкинути). Після введення запиту, натискайте синю кнопку (Пошук) і результати буде відображено одразу нижче блоку з формою. Кожен наступний запит затирає блок з результатами - будьте обережні!
+					Вміст вкладки буде відображено в головному вікні. Переключення між вкладками не очищує результати пошуків для зручності. Для того, щоб очистити форму пошуку/вводу натисніть жовту кнопку (Cкинути). Після введення запиту, натискайте синю кнопку (Пошук) і результати буде відображено одразу нижче блоку з формою. Кожен наступний запит затирає блок з результатами - будьте обережні!
 				</p>
 				<p  style="font-size: 1.25em;text-indent: 1em;">
 					В результатах пошуку можливі помилки, оскільки база ТТН-ліс є згенерованою (можливі повтори та друкарські помилки). Для досягнення найбільшої точності необхідно вводити максимальну кількість відомих символів, оскільки застосовується пошук по масці. Наприклад, по запиту "202171", використовуючи пошук по бирках буде знайдено ТТН, в якій присутня бирка з даним номером, а по запиту "170" - найпершу ТТН в якій одна з бирок  <span style="text-decoration: underline;">хоча-б частково містить</span> даний запит (201700, 301170, 600170).
 				</p>
 				<p  style="font-size: 1.25em;text-indent: 1em;">
 					Якщо поле буде не заповнено, то при спробі введення або пошуку дане поле підсвітиться червоним.
-					Єдине необов'язкове поле - поле вкладення файлу (Фото ТТН).
+					Поле вкладення файлу (Фото ТТН) не підсвічується, але має бути заповнено.
 				</p>
 			</div>
 		</div>
@@ -591,7 +602,7 @@
 					<div class="ui large blue submit button">
 						<i class="search icon"></i> Пошук
 					</div>
-					<div class="ui large yellow right floated clear button">Зкинути</div>
+					<div class="ui large yellow right floated clear button">Cкинути</div>
 				</div>
 			</div>
 			<div class="ui raised text padded container segment" id="results_table_car">
@@ -610,7 +621,7 @@
 					<div class="ui large blue submit button">
 						<i class="search icon"></i> Пошук
 					</div>
-					<div class="ui large yellow right floated clear button">Зкинути</div>
+					<div class="ui large yellow right floated clear button">Cкинути</div>
 				</div>
 			</div>
 			<div class="ui raised text padded container segment" id="results_table_ttn">
@@ -629,7 +640,7 @@
 					<div class="ui large blue submit button">
 						<i class="search icon"></i> Пошук
 					</div>
-					<div class="ui large yellow right floated clear button">Зкинути</div>
+					<div class="ui large yellow right floated clear button">Cкинути</div>
 				</div>
 			</div>
 			<div class="ui raised text padded container segment" id="results_table_birka">
@@ -739,7 +750,7 @@
 						Внести дані
 						<!-- <i class="right arrow icon"></i> -->
 					</div>
-					<div class="ui large yellow right floated clear button">Зкинути</div>
+					<div class="ui large yellow right floated clear button">Cкинути</div>
 				</div>
 			</div>
 			<div class="ui raised text padded container segment" id="results_table_input">
@@ -749,34 +760,9 @@
 			</div>
 		</div>
 		<div class="ui raised very padded text container segment" id="dumb_content">
-			<h3 class="ui header">Застосування табличного методу значно полегшує орієнтацію в матеріалі. </h3>
-			<p>Дані по введеному запиту буде відображено у наступному вигляді:</p>
-			<table class="ui compact celled collapsing unstackable striped table dumb_content_table">
-				<thead>
-					<tr>
-						<th>Header</th>
-						<th>Header</th>
-						<th>Header</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>Cell</td>
-						<td>Cell</td>
-						<td>Cell</td>
-					</tr>
-					<tr>
-						<td>Cell</td>
-						<td>Cell</td>
-						<td>Cell</td>
-					</tr>
-					<tr>
-						<td>Cell</td>
-						<td>Cell</td>
-						<td>Cell</td>
-					</tr>
-				</tbody>
-			</table>
+			<h3 class="ui header">Коротко про сервіс</h3>
+			<p>Розроблена система показує переваги підходів запропонованих в Концепції громадського контролю за транспортуванням необробленої деревини в Україні, розробленої в межах програми “ENPI EAST FLEG II” «Підтримка розвитку механізму залучення громадськості до контролю транспортування деревини в Україні» та може вдосконалюватись будь-ким, так як всі напрацювання розміщені у відкритому доступі.</p>
+			<p>За підтримки органів державної виконавчої влади можлива синхронізація інформації вже з існуючими системами контролю руху заготовленої деревини в Україні (ЕОД та інші) та її застосування для роботи відповідних державних колл-центрів.</p>
 			<h4 class="ui horizontal header divider">
 						<a href="#">ДО УВАГИ</a>
 			  </h4>
@@ -796,8 +782,8 @@
 				<div class="ui stackable inverted divided equal height stackable grid">
 					<div class="seven wide centered column">
 						<h3 class="ui inverted header">Звязок з адміністратором сайту: mail@proderevo.info</h3>
-						<!-- <h4 class="ui inverted "></h4> -->
-						<!-- <p>Extra space for a call to action inside the footer that could help re-engage users.</p> -->
+						<h4 class="ui inverted "><a href="assets/proderevo.apk">Скачати ПЗ для Android(apk-файл)</a></h4>
+						<h4 class="ui inverted "><a href="assets/proderevo_search.apk">Скачати ПЗ для Android(apk-файл) з формою вводу даних</a></h4>
 					</div>
 				</div>
 			</div>
